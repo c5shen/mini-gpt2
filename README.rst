@@ -31,19 +31,20 @@ Files
        is present in the directory, will not overwrite but will save the new
        trained model as ``train.model.X``, ``X=1,2,...``.
    * - ``train_eval.py``
-     - (evaluation) For evaluating the a trained model.
-       Takes a directory name as the first argument to read the trained model from.
+     - (evaluation) For evaluating a trained model (``train.model``).
+       Takes a directory name as the first argument to read the trained model.
    * - ``gpt2.py``
      - (training) My implementation with customizations of the GPT-2 model.
        With both the model implementation and the code for training.
        Takes a directory name as the first argument for reading training data
        and outputting trained model.
    * - ``gpt2_eval.py``
-     - (evaluation) For evaluating a trained model from the given directory.
+     - (evaluation) For evaluating a trained model (``gpt2.model``).
+       Takes a directory name as the first argument to read the trained model.
    * - ``gpt2_test.py``
      - (evaluation) More advanced and interactive code for evaluating a
-       trained model. Allowed continuous reading input from the user and
-       saving context from previous user inputs.
+       trained model (``gpt2.model``). Allows continuous reading input from
+       the user and saves context from previous user inputs.
 
 Customization
 -------------
