@@ -1,0 +1,9 @@
+__pycache__
+pipeline.ipynb
+gpt2.model
+train.model*
+tokenizer.json
+alllines.txt.zip
+rnn_shakespeare_input.txt.zip
+t8.shakespeare.txt.zip
+.ipynb_checkpoints
