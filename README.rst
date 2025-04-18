@@ -11,6 +11,10 @@ and train a (small) GPT-2 model with a decoder-only transformer architecture.
 The tutorial can be found at
 `this Youtube link <https://www.youtube.com/watch?v=kCc8FmEb1nY>`__.
 
+Customizations
+   I did some customizations based on the original code presented by Andrej.
+   See ``gpt2.py`` and ``gpt2_test.py`` for more details.
+
 Files
 -----
 .. list-table::
@@ -46,10 +50,15 @@ Files
        trained model (``gpt2.model``). Allows continuous reading input from
        the user and saves context from previous user inputs.
 
-Customization
--------------
-I did some customizations based on the original code presented by Andrej. See
-``gpt2.py`` and ``gpt2_test.py`` for more details.
+Requirements
+------------
+
+::
+
+   tokenizers>=0.21.1
+   torch>=2.5.1
+   torchinfo>=1.8.0
+
 
 Usage
 -----
