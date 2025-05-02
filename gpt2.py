@@ -58,14 +58,15 @@ def estimate_loss(model, train_data, val_data, batch_size, block_size,
 Single head self-attention
 """
 class Head(nn.Module):
-    def __init__(self, head_size):
+    def __init__(self, head_size, context_size):
         super().__init__()
         # key, query, value linear projections
         self.key = nn.Linear(n_embed, head_size, bias=False)
         self.query = nn.Linear(n_embed, head_size, bias=False)
         self.value = nn.Linear(n_embed, head_size, bias=False)
         # not a module and assigned as a "buffer" for masking
-        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+        self.register_buffer('tril', torch.tril(
+            torch.ones(context_size, context_size)))
         
         # add dropout layer
         self.dropout = nn.Dropout(dropout)
@@ -93,10 +94,10 @@ class Head(nn.Module):
 Multi-head attention
 """
 class MultiHeadAttention(nn.Module):
-    def __init__(self, nhead, head_size):
+    def __init__(self, nhead, head_size, context_size):
         super().__init__()
         # reuse what we just implemented above
-        self.heads = nn.ModuleList([Head(head_size) for _ in range(nhead)])
+        self.heads = nn.ModuleList([Head(head_size, context_size) for _ in range(nhead)])
         # add a projection, linear transformation of the outcome of the MHA layer
         self.proj = nn.Linear(n_embed, n_embed)
     
@@ -125,7 +126,7 @@ class FeedForward(nn.Module):
 A decoder block
 """
 class DecoderBlock(nn.Module):
-    def __init__(self, n_embed, nhead):
+    def __init__(self, n_embed, nhead, context_size):
         super().__init__()
         # embedding dimension and number of heads
         
@@ -136,7 +137,7 @@ class DecoderBlock(nn.Module):
         self.ln1 = nn.LayerNorm(n_embed)
 
         # MHA layer
-        self.attention = MultiHeadAttention(nhead, head_size)
+        self.attention = MultiHeadAttention(nhead, head_size, context_size)
         
         # layernorm before feedforward
         self.ln2 = nn.LayerNorm(n_embed)
@@ -156,16 +157,16 @@ class DecoderBlock(nn.Module):
 Bigram model
 """
 class BigramLanguageModel(nn.Module):
-    def __init__(self, vocab_size):
+    def __init__(self, vocab_size, context_size):
         super().__init__()
         # each token directly reads off the logits for the next token from a lookup table
         self.token_embedding = nn.Embedding(vocab_size, n_embed)
         
         # positional embedding table (for each position in the context)
-        self.positional_embedding = nn.Embedding(block_size, n_embed)
+        self.positional_embedding = nn.Embedding(context_size, n_embed)
         
         # have multiple decoder blocks and a layernorm after all decoder blocks
-        self.decoders = nn.Sequential(*[DecoderBlock(n_embed, nhead) for _ in range(n_layers)])
+        self.decoders = nn.Sequential(*[DecoderBlock(n_embed, nhead, context_size) for _ in range(n_layers)])
         self.ln = nn.LayerNorm(n_embed)   # typically add a layernorm before the final output head
         
         # use a linear layer to obtain the final logits from the embedding
@@ -272,7 +273,7 @@ if __name__ == "__main__":
     train_data = data[:n]
     val_data = data[n:]
 
-    model = BigramLanguageModel(vocab_size)
+    model = BigramLanguageModel(vocab_size, block_size)
     m = model.to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 

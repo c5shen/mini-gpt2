@@ -1,6 +1,6 @@
 __pycache__
 pipeline.ipynb
-gpt2.model
+gpt2.model*
 train.model*
 tokenizer.json
 alllines.txt.zip

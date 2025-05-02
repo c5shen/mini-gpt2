@@ -49,19 +49,19 @@ if os.path.exists(tokenizer_path):
     tokenizer = Tokenizer.from_file(tokenizer_path)
 else:
     raise FileNotFoundError(f"tokenizer not found at: {tokenizer_path}")
-model = BigramLanguageModel(vocab_size)
+model = BigramLanguageModel(vocab_size, block_size)
 
 # try to find the input model
 input_model = os.path.join(indir, 'gpt2.model')
 # use the latest version if any
 idx = 1
 while os.path.exists(input_model + f'.{idx}'):
-    idx += 1
-if os.path.exists(input_model + f'.{idx}'):
     input_model = input_model + f'.{idx}'
+    idx += 1
 if not os.path.exists(input_model):
     print(f"Model path {input_model} does not exist!")
     exit(1)
+print(f'Loading model from {input_model}')
 model.load_state_dict(torch.load(input_model, weights_only=True))
 summary(model)
 
